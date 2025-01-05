@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ['hubspot-credentials-na1.s3.amazonaws.com']
+  }
 };
 
 export default nextConfig;

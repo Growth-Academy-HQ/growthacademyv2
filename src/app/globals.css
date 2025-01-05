@@ -2,20 +2,148 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #000000;
+    --foreground: #ffffff;
+  }
+
+  body {
+    @apply bg-black text-white;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .btn {
+    @apply rounded-full px-6 py-3 font-medium transition-all duration-200;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-white to-gray-200 text-black 
+           hover:opacity-90 shadow-lg shadow-white/25;
+  }
+
+  .btn-secondary {
+    @apply border border-white/20 bg-white/5 text-white 
+           hover:bg-white/10;
+  }
+
+  .card {
+    @apply relative overflow-hidden rounded-2xl border border-white/10 
+           bg-white/5 p-8 hover:bg-white/10 transition-colors duration-300;
+  }
+
+  .input {
+    @apply px-4 py-3 rounded-xl border border-white/10 bg-white/5 
+           text-white placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-white/50 
+           transition-all duration-200;
+  }
+
+  /* Select element styling */
+  select.input {
+    @apply appearance-none bg-no-repeat;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+
+  select.input option {
+    @apply bg-black text-white;
+  }
+
+  select.input[multiple] {
+    background-image: none;
+    padding-right: 0.75rem;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-white via-gray-200 to-gray-300 
+           bg-clip-text text-transparent;
+  }
+
+  .highlight-badge {
+    @apply inline-block rounded-full bg-white/10 px-4 py-1 
+           text-sm font-medium text-gray-200;
+  }
+}
+
+/* Custom animations */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-60px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better focus styles */
+:focus-visible {
+  outline: 2px solid theme('colors.white');
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme('colors.black');
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme('colors.gray.800');
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.gray.700');
+}
+
+/* Clerk Form Improvements */
+.cl-formButtonPrimary {
+  @apply bg-gradient-to-r from-white to-gray-200 text-black;
+}
+
+.cl-formFieldInput {
+  @apply bg-white/5 border-white/10 text-white !important;
+}
+
+.cl-formFieldLabel {
+  @apply text-gray-300 !important;
+}
+
+.cl-otpCodeInput {
+  @apply bg-white/5 border-white/10 text-white !important;
+  @apply placeholder-gray-400 !important;
+}
+
+/* Custom checkbox styling */
+input[type="checkbox"] {
+  @apply h-4 w-4 rounded border-white/10 bg-white/5 
+         text-white focus:ring-2 focus:ring-white/50 
+         focus:ring-offset-0 transition-all duration-200
+         hover:border-white/20;
+}
+
+input[type="checkbox"]:checked {
+  background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='black' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+  @apply bg-white border-white/50;
 }
