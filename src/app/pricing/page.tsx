@@ -27,21 +27,32 @@ export default function PricingPage() {
         <div className="flex min-h-screen items-center justify-center bg-black pt-20">
           <div className="w-full max-w-md">
             <SignUp 
-              routing="hash"
-              fallbackRedirectUrl="/growth-ai"
-              signInFallbackRedirectUrl="/growth-ai"
+              path={selectedPlan}
+              routing="path"
               appearance={{
                 elements: {
                   rootBox: "w-full",
-                  card: "bg-white/5 border border-white/10",
-                  headerTitle: "text-white",
-                  headerSubtitle: "text-gray-300",
-                  socialButtonsBlockButton: "bg-white/10 border border-white/20 text-white hover:bg-white/20",
-                  dividerLine: "bg-white/10",
-                  formButtonPrimary: "bg-gradient-to-r from-white to-gray-200 text-black",
-                  formFieldInput: "bg-white/5 border-white/10 text-white",
-                  formFieldLabel: "text-gray-300",
-                  footer: "hidden"
+                  card: "bg-white",
+                  headerTitle: "text-gray-900",
+                  headerSubtitle: "text-gray-600",
+                  socialButtonsBlockButton: "text-gray-900 border border-gray-300 hover:bg-gray-50",
+                  socialButtonsBlockButtonText: "text-gray-900",
+                  dividerLine: "bg-gray-200",
+                  formButtonPrimary: "bg-black hover:bg-black/80 text-white",
+                  formFieldInput: "bg-white border-gray-200",
+                  formFieldInputText: "text-black",
+                  formFieldLabel: "text-gray-700",
+                  footerActionText: "text-gray-900",
+                  footerActionLink: "text-blue-600 hover:text-blue-800",
+                  identityPreviewText: "text-black",
+                  formFieldSuccessText: "text-black"
+                },
+                variables: {
+                  colorText: "#000000",
+                  colorTextSecondary: "#374151",
+                  colorBackground: "#FFFFFF",
+                  colorInputText: "#000000",
+                  colorInputBackground: "#FFFFFF"
                 }
               }}
             />

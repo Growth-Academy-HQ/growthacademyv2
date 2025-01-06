@@ -5,6 +5,7 @@ import { fadeIn, slideIn, staggerContainer } from '@/lib/animations'
 import Image from "next/image"
 import CurvedBackground from "@/components/CurvedBackground"
 import { useEffect } from 'react'
+import { SignInButton } from '@clerk/nextjs'
 
 interface Testimonial {
   author: string;
@@ -95,16 +96,13 @@ export default function Home() {
                 Leverage AI-powered strategies to scale your business. Get personalized marketing plans, data-driven insights, and actionable recommendations.
               </p>
               <motion.div 
-                className="mt-10 flex items-center justify-center gap-x-6"
+                className="mt-10 flex items-center justify-center"
                 variants={fadeIn}
               >
-                <Link href="/growth-ai">
-                  <button className="rounded-full bg-gradient-to-r from-white to-gray-200 px-8 py-4 text-sm font-medium text-black hover:opacity-90 transition-all duration-200 shadow-lg shadow-white/25">
-                    Try Growth AI
+                <Link href="/pricing">
+                  <button className="rounded-lg bg-white hover:bg-white/90 px-8 py-3 text-sm font-medium text-black transition-all duration-200 shadow-sm hover:shadow-md">
+                    Get Started
                   </button>
-                </Link>
-                <Link href="/case-studies" className="text-sm font-semibold leading-6 text-white">
-                  View Case Studies <span aria-hidden="true">→</span>
                 </Link>
               </motion.div>
             </motion.div>

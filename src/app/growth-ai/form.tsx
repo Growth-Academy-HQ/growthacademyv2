@@ -35,29 +35,48 @@ const marketingChannels = [
 ]
 
 const formSchema = z.object({
-  businessName: z.string().min(2, {
-    message: "Business name must be at least 2 characters.",
-  }),
-  description: z.string().min(10, {
-    message: "Description must be at least 10 characters.",
-  }),
-  industry: z.string().min(2, {
-    message: "Please select an industry.",
-  }),
-  targetAudience: z.string().min(10, {
-    message: "Target audience must be at least 10 characters.",
-  }),
-  goals: z.string().min(10, {
-    message: "Goals must be at least 10 characters.",
-  }),
-  budget: z.string().optional(),
-  challenges: z.string().min(10, {
-    message: "Challenges must be at least 10 characters.",
-  }),
-  marketingChannels: z.array(z.string()).min(1, {
-    message: "Please select at least one marketing channel.",
-  }),
-  additionalNotes: z.string().optional(),
+  businessName: z.string()
+    .min(2, {
+      message: "Business name must be at least 2 characters.",
+    }).max(100, {
+      message: "Business name must be less than 100 characters.",
+    }),
+  description: z.string()
+    .min(10, {
+      message: "Description must be at least 10 characters.",
+    }),
+  industry: z.string()
+    .min(2, {
+      message: "Please select an industry.",
+    }).max(50, {
+      message: "Industry must be less than 50 characters.",
+    }),
+  targetAudience: z.string()
+    .min(10, {
+      message: "Target audience must be at least 10 characters.",
+    }).max(500, {
+      message: "Target audience must be less than 500 characters.",
+    }),
+  goals: z.string()
+    .min(10, {
+      message: "Goals must be at least 10 characters.",
+    }),
+  budget: z.string()
+    .regex(/^\$?\d+(?:,\d{3})*(?:\.\d{2})?$/, {
+      message: "Please enter a valid budget (e.g., $1,000 or 1000).",
+    }),
+  challenges: z.string()
+    .min(10, {
+      message: "Challenges must be at least 10 characters.",
+    }),
+  marketingChannels: z.array(z.string())
+    .min(1, {
+      message: "Please select at least one marketing channel.",
+    }).max(10, {
+      message: "Maximum 10 channels allowed.",
+    }),
+  additionalNotes: z.string()
+    .optional(),
 })
 
 export default function GrowthAIForm() {
@@ -84,46 +103,71 @@ export default function GrowthAIForm() {
     setGeneratedPlan(null)
 
     try {
-      const response = await fetch("/api/generate", {
+      // First generate the plan
+      const generateResponse = await fetch("/api/generate", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...values,
-          date: new Date().toISOString(),
+          businessName: values.businessName,
+          description: values.description,
+          industry: values.industry,
+          targetAudience: values.targetAudience,
+          goals: values.goals,
+          budget: values.budget,
+          challenges: values.challenges,
+          marketingChannels: values.marketingChannels,
+          additionalNotes: values.additionalNotes,
         }),
       })
 
-      if (!response.ok) {
+      if (!generateResponse.ok) {
+        const errorText = await generateResponse.text()
+        console.error("Failed to generate plan:", errorText)
         throw new Error("Failed to generate plan")
       }
 
-      const data = await response.json()
-      setGeneratedPlan(data.plan)
+      const { plan } = await generateResponse.json()
+      setGeneratedPlan(plan)
 
-      // Save to dashboard
-      await fetch("/api/save-plan", {
+      // Then save it using the marketing-plans endpoint
+      const saveResponse = await fetch("/api/marketing-plans", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          plan: data.plan,
           businessName: values.businessName,
           industry: values.industry,
-          date: new Date().toISOString(),
+          targetAudience: values.targetAudience,
+          goals: values.goals.split(',').map(g => g.trim()).filter(g => g),
+          budget: values.budget,
+          timeline: "3 months",
+          competitors: [],
+          currentChannels: values.marketingChannels,
+          plan,
         }),
       })
+
+      if (!saveResponse.ok) {
+        const errorText = await saveResponse.text()
+        console.error("Failed to save plan:", errorText)
+        throw new Error("Failed to save plan")
+      }
+
+      const savedPlan = await saveResponse.json()
+      console.log("Saved plan:", savedPlan)
 
       toast({
         title: "Success!",
         description: "Your marketing plan has been generated and saved.",
       })
     } catch (error) {
+      console.error("Error:", error)
       toast({
         title: "Error",
-        description: "Failed to generate marketing plan. Please try again.",
+        description: "Failed to generate or save marketing plan. Please try again.",
         variant: "destructive",
       })
     } finally {

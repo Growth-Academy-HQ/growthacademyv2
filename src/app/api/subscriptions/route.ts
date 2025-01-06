@@ -23,7 +23,51 @@ const TIER_LIMITS = {
   "growth-expert": 20,
 } as const
 
+async function cleanupExpiredSubscriptions() {
+  const now = new Date().toISOString()
+  
+  // Find expired subscriptions
+  const { data: expiredSubscriptions, error: fetchError } = await supabase
+    .from("subscriptions")
+    .select("*")
+    .eq("status", "active")
+    .lt("current_period_end", now)
+
+  if (fetchError) {
+    console.error("Error fetching expired subscriptions:", fetchError)
+    return
+  }
+
+  // Update expired subscriptions to free tier
+  for (const subscription of expiredSubscriptions || []) {
+    const { error: updateError } = await supabase
+      .from("subscriptions")
+      .update({
+        tier: "free",
+        status: "active",
+        plan_generations_left: TIER_LIMITS.free,
+        max_plan_generations: TIER_LIMITS.free,
+        current_period_end: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        stripe_subscription_id: null
+      })
+      .eq("id", subscription.id)
+
+    if (updateError) {
+      console.error(`Error updating expired subscription ${subscription.id}:`, updateError)
+    } else {
+      await createAuditLog(subscription.user_id, "update_subscription", {
+        from_tier: subscription.tier,
+        to_tier: "free",
+        reason: "subscription_expired"
+      })
+    }
+  }
+}
+
 export const GET = withApiMiddleware(async (req: Request, userId: string) => {
+  // Run cleanup before checking subscription
+  await cleanupExpiredSubscriptions()
+  
   const { data: subscription } = await supabase
     .from("subscriptions")
     .select("*")

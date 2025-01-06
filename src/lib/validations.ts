@@ -24,7 +24,17 @@ export const marketingPlanSchema = z.object({
     .optional(),
   currentChannels: z.array(z.string())
     .max(10, "Maximum 10 channels allowed")
-    .optional()
+    .optional(),
+  description: z.string()
+    .min(10, "Description must be at least 10 characters")
+    .optional(),
+  challenges: z.string()
+    .min(10, "Challenges must be at least 10 characters")
+    .optional(),
+  additionalNotes: z.string()
+    .optional(),
+  plan: z.string()
+    .min(1, "Plan content is required")
 })
 
 // Subscription Schema

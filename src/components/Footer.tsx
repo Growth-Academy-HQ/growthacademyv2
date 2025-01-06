@@ -23,7 +23,8 @@ export default function Footer() {
                 src="/assets/logos/growth-academy-logo.svg"
                 alt="Growth Academy"
                 fill
-                className="object-contain"
+                className="object-contain brightness-0 invert"
+                priority
               />
             </div>
             <p className="text-gray-400">Transforming businesses through AI-powered marketing strategies.</p>

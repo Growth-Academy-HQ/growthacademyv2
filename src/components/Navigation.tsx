@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { UserButton, useUser } from '@clerk/nextjs'
+import { UserButton, SignInButton, useUser } from '@clerk/nextjs'
 import Image from 'next/image'
 
 export default function Navigation() {
@@ -45,16 +45,34 @@ export default function Navigation() {
             )}
           </div>
 
-          <div className="w-[180px] flex justify-end">
+          <div className="w-[180px] flex justify-end items-center gap-2">
             {!isSignedIn ? (
-              <Link
-                href="/growth-ai"
-                className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/90 transition-colors"
-              >
-                Get Started
-              </Link>
+              <>
+                <SignInButton mode="modal">
+                  <button className="rounded-md bg-black hover:bg-black/80 px-3 py-1.5 text-sm font-medium text-white transition-all duration-200">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <Link
+                  href="/pricing"
+                  className="rounded-md bg-white hover:bg-white/90 px-3 py-1.5 text-sm font-medium text-black transition-all duration-200"
+                >
+                  Get Started
+                </Link>
+              </>
             ) : (
-              <UserButton afterSignOutUrl="/" />
+              <UserButton 
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8",
+                    userButtonPopoverCard: "bg-black/90 border border-white/10",
+                    userButtonPopoverActionButton: "hover:bg-white/10",
+                    userButtonPopoverActionButtonText: "text-white",
+                    userButtonPopoverFooter: "hidden"
+                  }
+                }}
+              />
             )}
           </div>
         </div>
